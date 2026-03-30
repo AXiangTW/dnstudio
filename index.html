@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DN STUDIO</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:Arial;background:#f5efe6;padding:20px}
+.card{background:#fff;padding:10px;margin:10px;border-radius:10px}
+button{padding:8px;background:#D8C3A5;color:#fff;border:none}
+</style>
+</head>
+<body>
+
+<h2>DN STUDIO 商品</h2>
+
+<div id="products"></div>
+
+<h3>下單</h3>
+<input id="code" placeholder="貨號"><br>
+<input id="color" placeholder="顏色"><br>
+<input id="size" placeholder="尺寸"><br>
+<input id="qty" type="number" placeholder="數量"><br>
+<button onclick="order()">送出訂單</button>
+
+<script>
+
+const supabase = window.supabase.createClient("https://rbyvnmmjoklrwpjmgkvg.supabase.co", "sb_publishable_e-cmNZ39pJ5dapTDw_OItg_lVErPmw_")
+
+async function loadProducts(){
+let { data } = await supabase.from("products").select("*")
+let html=""
+data?.forEach(p=>{
+html+=`<div class="card">貨號: ${p.code}<br>價格: ${p.price}</div>`
+})
+document.getElementById("products").innerHTML=html
+}
+
+async function order(){
+let code=document.getElementById("code").value
+let color=document.getElementById("color").value
+let size=document.getElementById("size").value
+let qty=parseInt(document.getElementById("qty").value)
+
+let orderNo="DN"+Date.now()
+
+await supabase.from("orders").insert([{order_no:orderNo,status:"未到貨"}])
+
+await supabase.from("order_items").insert([
+{order_no:orderNo,product_code:code,color:color,size:size,qty:qty}
+])
+
+alert("訂單成功 "+orderNo)
+}
+
+loadProducts()
+
+</script>
+
+</body>
+</html>

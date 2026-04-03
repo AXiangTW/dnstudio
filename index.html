@@ -8,9 +8,10 @@
 
 <body style="font-family:sans-serif;padding:20px;">
 
+<h1>測試版本</h1>
+
 <h2>DN STUDIO 批發下單</h2>
 
-<!-- 商品 -->
 <h3>A01 素T</h3>
 黑-M：<input id="a01_black_m" type="number" value="0"><br><br>
 
@@ -20,7 +21,6 @@
 <h3>B01 牛仔褲</h3>
 28：<input id="b01_28" type="number" value="0"><br><br>
 
-<!-- 按鈕 -->
 <button onclick="submitOrder()" style="padding:15px;font-size:18px;">
 送出訂單
 </button>
@@ -32,7 +32,7 @@ const supabase = window.supabase.createClient(
 );
 
 async function submitOrder() {
-  alert("按鈕有觸發"); // 👈 測試用
+  alert("按鈕有觸發");
 
   const orderData = {
     A01_黑_M: document.getElementById("a01_black_m").value,
@@ -40,9 +40,7 @@ async function submitOrder() {
     B01_28: document.getElementById("b01_28").value
   };
 
-  console.log("送出資料：", orderData);
-
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("orders")
     .insert([
       {
@@ -54,7 +52,6 @@ async function submitOrder() {
 
   if (error) {
     alert("❌ 錯誤：" + error.message);
-    console.log(error);
   } else {
     alert("✅ 成功送出");
   }

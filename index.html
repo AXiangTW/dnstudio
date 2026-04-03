@@ -32,6 +32,7 @@ const supabase = window.supabase.createClient(
 );
 
 async function submitOrder() {
+  alert("按鈕有觸發"); // 👈 測試用
 
   const orderData = {
     A01_黑_M: document.getElementById("a01_black_m").value,
@@ -39,7 +40,9 @@ async function submitOrder() {
     B01_28: document.getElementById("b01_28").value
   };
 
-  const { error } = await supabase
+  console.log("送出資料：", orderData);
+
+  const { data, error } = await supabase
     .from("orders")
     .insert([
       {
@@ -50,13 +53,10 @@ async function submitOrder() {
     ]);
 
   if (error) {
-    alert("❌ 送出失敗");
+    alert("❌ 錯誤：" + error.message);
     console.log(error);
   } else {
-    alert("✅ 訂單已送出");
-
-    // 清空
-    document.querySelectorAll("input").forEach(i => i.value = 0);
+    alert("✅ 成功送出");
   }
 }
 </script>

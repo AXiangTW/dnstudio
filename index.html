@@ -1,77 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>DN STUDIO 批發系統</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DN STUDIO 批發下單</title>
+
 <style>
-body { font-family: sans-serif; padding:20px; }
-.card { border:1px solid #ccc; padding:10px; margin:10px 0; }
-button { padding:10px; margin-top:10px; }
+body {
+  font-family: Arial;
+  padding: 10px;
+  background: #f5f5f5;
+}
+
+.box {
+  background: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+h2 {
+  margin: 10px 0;
+}
+
+input {
+  width: 60px;
+  margin-left: 5px;
+}
+
+/* 🔥 固定底部按鈕 */
+.submit-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
 </style>
 </head>
+
 <body>
+
 <h2>DN STUDIO 批發下單</h2>
-<div id="products"></div>
-<p id="msg"></p>
+
+<div class="box">
+<b>A01 素T</b><br>
+黑-S <input type="number" id="a1"><br>
+黑-M <input type="number" id="a2"><br>
+黑-L <input type="number" id="a3"><br>
+白-S <input type="number" id="a4"><br>
+白-M <input type="number" id="a5"><br>
+白-L <input type="number" id="a6"><br>
+</div>
+
+<div class="box">
+<b>A02 襯衫</b><br>
+黑-M <input type="number" id="b1"><br>
+黑-L <input type="number" id="b2"><br>
+藍-M <input type="number" id="b3"><br>
+藍-L <input type="number" id="b4"><br>
+</div>
+
+<div class="box">
+<b>B01 牛仔褲</b><br>
+28 <input type="number" id="c1"><br>
+30 <input type="number" id="c2"><br>
+32 <input type="number" id="c3"><br>
+</div>
+
+<div class="box">
+<b>B02 短褲</b><br>
+黑-M <input type="number" id="d1"><br>
+黑-L <input type="number" id="d2"><br>
+卡其-M <input type="number" id="d3"><br>
+卡其-L <input type="number" id="d4"><br>
+</div>
+
+<!-- 🔥 固定送出按鈕 -->
+<div class="submit-bar">
+  <button onclick="submitOrder()">送出訂單</button>
+</div>
+
 <script>
-const products = [
-  { name: "A01 素T", options: ["黑-S","黑-M","黑-L","白-S","白-M","白-L"] },
-  { name: "A02 襯衫", options: ["黑-M","黑-L","藍-M","藍-L"] },
-  { name: "B01 牛仔褲", options: ["28","30","32"] },
-  { name: "B02 短褲", options: ["黑-M","黑-L","卡其-M","卡其-L"] }
-];
+function submitOrder() {
+  let data = {
+    A01_S: document.getElementById("a1").value,
+    A01_M: document.getElementById("a2").value,
+    A01_L: document.getElementById("a3").value,
+  };
 
-const container = document.getElementById("products");
+  console.log(data);
 
-products.forEach((p,i)=>{
-  let html = `<div class="card"><b>${p.name}</b><br>`;
-  p.options.forEach(opt=>{
-    html += `${opt}：<input type="number" id="${p.name}_${opt}" value="0"><br>`;
-  });
-  html += "</div>";
-  container.innerHTML += html;
-});
-
-async function submitOrder(){
-  let order = [];
-
-  products.forEach(p=>{
-    p.options.forEach(opt=>{
-      let val = document.getElementById(p.name+"_"+opt).value;
-      if(val > 0){
-        order.push({
-          product: p.name,
-          option: opt,
-          qty: val
-        });
-      }
-    });
-  });
-
-  if(order.length === 0){
-    alert("請輸入數量");
-    return;
-  }
-
-  const res = await fetch("https://rbyvnmmjoklrwpjmgkvg.supabase.co/rest/v1/orders", {
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJieXZubW1qb2tscndwam1na3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4ODMxODksImV4cCI6MjA5MDQ1OTE4OX0.z7BBopr3aW1tJRZDXYTAtGX0pVUwALLTHFCcSeqZLx4",
-      "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJieXZubW1qb2tscndwam1na3ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4ODMxODksImV4cCI6MjA5MDQ1OTE4OX0.z7BBopr3aW1tJRZDXYTAtGX0pVUwALLTHFCcSeqZLx4"
-    },
-    body: JSON.stringify({
-      order_data: order
-    })
-  });
-
-  if(res.ok){
-    document.getElementById("msg").innerText = "✅ 訂單已送出";
-  }else{
-    document.getElementById("msg").innerText = "❌ 送出失敗";
-  }
+  alert("訂單已送出（Demo版）");
 }
 </script>
+
 </body>
 </html>
-:::

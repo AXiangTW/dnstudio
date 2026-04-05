@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <title>DN STUDIO 批發下單</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body style="font-family:sans-serif;padding:20px;">
-
-<h1>測試版本</h1>
+<body style="font-family:sans-serif; padding:20px;">
 
 <h2>DN STUDIO 批發下單</h2>
 
 <h3>A01 素T</h3>
-黑-M：<input id="a01_black_m" type="number" value="0"><br><br>
+黑-M：<input id="a01_m"><br><br>
 
 <h3>A02 襯衫</h3>
-黑-M：<input id="a02_black_m" type="number" value="0"><br><br>
+黑-M：<input id="a02_m"><br><br>
 
 <h3>B01 牛仔褲</h3>
-28：<input id="b01_28" type="number" value="0"><br><br>
+28：<input id="b01_28"><br><br>
 
-<button onclick="submitOrder()" style="padding:15px;font-size:18px;">
-送出訂單
-</button>
+<button onclick="submitOrder()">送出訂單</button>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
 const supabase = window.supabase.createClient(
@@ -32,15 +30,14 @@ const supabase = window.supabase.createClient(
 );
 
 async function submitOrder() {
-  alert("按鈕有觸發");
 
   const orderData = {
-    A01_黑_M: document.getElementById("a01_black_m").value,
-    A02_黑_M: document.getElementById("a02_black_m").value,
-    B01_28: document.getElementById("b01_28").value
+    a01_m: document.getElementById("a01_m").value || 0,
+    a02_m: document.getElementById("a02_m").value || 0,
+    b01_28: document.getElementById("b01_28").value || 0
   };
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("orders")
     .insert([
       {
@@ -51,9 +48,11 @@ async function submitOrder() {
     ]);
 
   if (error) {
-    alert("❌ 錯誤：" + error.message);
+    alert("❌ 失敗：" + error.message);
+    console.log(error);
   } else {
-    alert("✅ 成功送出");
+    alert("✅ 訂單已送出！");
+    console.log(data);
   }
 }
 </script>

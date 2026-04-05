@@ -18,7 +18,7 @@
 <h3>B01 牛仔褲</h3>
 28：<input id="b01_28"><br><br>
 
-<button onclick="testClick()">送出訂單</button>
+<button onclick="submitOrder()">送出訂單</button>
 
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -54,12 +54,6 @@ async function submitOrder() {
     alert("✅ 訂單已送出！");
     console.log(data);
   }
-}
-</script>
-
-<script>
-function testClick() {
-  alert("有反應！");
 }
 </script>
 
